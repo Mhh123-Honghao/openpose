@@ -40,7 +40,8 @@ namespace op
     #define POSE_COCO_PAIRS_RENDER_GPU                      {1,2,   1,5,   2,3,   3,4,   5,6,   6,7,   1,8,   8,9,   9,10,  1,11,  11,12, 12,13,  1,0,   0,14, 14,16,  0,15, 15,17}
     const std::vector<unsigned int> POSE_COCO_PAIRS_RENDER  {POSE_COCO_PAIRS_RENDER_GPU};
     const std::vector<unsigned int> POSE_COCO_PAIRS         {1,2,   1,5,   2,3,   3,4,   5,6,   6,7,   1,8,   8,9,   9,10,  1,11,  11,12, 12,13,  1,0,   0,14, 14,16,  0,15, 15,17,   2,16,  5,17};
-    #define POSE_COCO_COLORS_RENDER_GPU \
+    /* by oak
+	#define POSE_COCO_COLORS_RENDER_GPU \
         255.f,     0.f,    85.f, \
         255.f,     0.f,     0.f, \
         255.f,    85.f,     0.f, \
@@ -59,6 +60,27 @@ namespace op
         170.f,     0.f,   255.f, \
         255.f,     0.f,   255.f, \
          85.f,     0.f,   255.f
+	end by oak*/
+	#define POSE_COCO_COLORS_RENDER_GPU \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+        255.f,     0.f,     0.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+        255.f,   255.f,     0.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f
+
     const std::vector<float> POSE_COCO_COLORS_RENDER{POSE_COCO_COLORS_RENDER_GPU};
     // MPI
     const std::map<unsigned int, std::string> POSE_MPI_BODY_PARTS {
@@ -100,7 +122,7 @@ namespace op
           0.f,   170.f,   255.f, \
           0.f,    85.f,   255.f, \
           0.f,     0.f,   255.f
-    const std::vector<float> POSE_MPI_COLORS_RENDER{POSE_MPI_COLORS_RENDER_GPU};
+	const std::vector<float> POSE_MPI_COLORS_RENDER{POSE_MPI_COLORS_RENDER_GPU};
     // BODY_18
     const std::map<unsigned int, std::string> POSE_BODY_18_BODY_PARTS { // Windows map copy error if `= POSE_COCO_BODY_PARTS`
 		{ 0,  "Nose" },
@@ -161,7 +183,8 @@ namespace op
     #define POSE_BODY_22_PAIRS_RENDER_GPU                      {1,2,   1,5,   2,3,   3,4,   5,6,   6,7,   1,8,   8,9,   9,10,  1,11,  11,12}
     const std::vector<unsigned int> POSE_BODY_22_PAIRS_RENDER  {POSE_BODY_22_PAIRS_RENDER_GPU};
     const std::vector<unsigned int> POSE_BODY_22_PAIRS         {1,2,   1,5,   2,3,   3,4,   5,6,   6,7,   1,8,   8,9,   9,10,  1,11,  11,12, 12,13,  1,0};
-    #define POSE_BODY_22_COLORS_RENDER_GPU \
+    /*
+	#define POSE_BODY_22_COLORS_RENDER_GPU \
         255.f,     0.f,     0.f, \
         255.f,    85.f,     0.f, \
         255.f,   170.f,     0.f, \
@@ -180,6 +203,26 @@ namespace op
         255.f,     0.f,   255.f, \
         255.f,     0.f,   170.f, \
         255.f,     0.f,    85.f
+	*/
+	#define POSE_BODY_22_COLORS_RENDER_GPU \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+        255.f,     0.f,     0.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+        255.f,   255.f,     0.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f,  \
+         85.f,     0.f,   255.f
     const std::vector<float> POSE_BODY_22_COLORS_RENDER{POSE_BODY_22_COLORS_RENDER_GPU};
 
     // Constant Array Parameters
