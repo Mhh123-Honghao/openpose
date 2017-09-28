@@ -173,7 +173,7 @@ class WUserInput : public op::WorkerProducer<std::shared_ptr<std::vector<UserDat
 {
 public:
     WUserInput(const std::string& directoryPath) :
-        mImageFiles{op::getFilesOnDirectory(directoryPath, "jpg")},
+        mImageFiles{op::getFilesOnDirectory(directoryPath)},
         // mImageFiles{op::getFilesOnDirectory(directoryPath, std::vector<std::string>{"jpg", "png"})}, // If we want "jpg" + "png" images
         mCounter{0}
     {
@@ -203,7 +203,9 @@ public:
                 auto& datum = datumsPtr->at(0);
 
                 // Fill datum
-                datum.cvInputData = cv::imread(mImageFiles.at(mCounter++));
+				auto& fullPath = mImageFiles.at(mCounter++);
+                datum.cvInputData = cv::imread(fullPath);
+				datum.name = op::getFileNameNoExtension(fullPath);
 
                 // If empty frame -> return nullptr
                 if (datum.cvInputData.empty())
@@ -248,9 +250,9 @@ public:
             // datum.poseKeypoints: Array<float> with the estimated pose
         try
         {
-            if (datumsPtr != nullptr && !datumsPtr->empty())
-                for (auto& datum : *datumsPtr)
-                    cv::bitwise_not(datum.cvOutputData, datum.cvOutputData);
+            //if (datumsPtr != nullptr && !datumsPtr->empty())
+            //    for (auto& datum : *datumsPtr)
+            //        cv::bitwise_not(datum.cvOutputData, datum.cvOutputData);
         }
         catch (const std::exception& e)
         {
@@ -280,6 +282,7 @@ public:
                 op::log("\nKeypoints:");
                 // Accesing each element of the keypoints
                 const auto& poseKeypoints = datumsPtr->at(0).poseKeypoints;
+				/*
                 op::log("Person pose keypoints:");
                 for (auto person = 0 ; person < poseKeypoints.getSize(0) ; person++)
                 {
@@ -299,10 +302,34 @@ public:
                 op::log("Face keypoints: " + datumsPtr->at(0).faceKeypoints.toString());
                 op::log("Left hand keypoints: " + datumsPtr->at(0).handKeypoints[0].toString());
                 op::log("Right hand keypoints: " + datumsPtr->at(0).handKeypoints[1].toString());
-
+				*/
                 // Display rendered output image
-                cv::imshow("User worker GUI", datumsPtr->at(0).cvOutputData);
+                //cv::imshow("User worker GUI", datumsPtr->at(0).cvOutputData);
+				cv::Mat &img = datumsPtr->at(0).cvInputData;
+				cv::imshow("User worker GUI", datumsPtr->at(0).cvOutputData);
                 cv::waitKey(1); // It displays the image and sleeps at least 1 ms (it usually sleeps ~5-10 msec to display the image)
+				const auto& handRects = datumsPtr->at(0).handRectangles;
+				int handCount = 0;
+				for (const auto& person : handRects) {
+					for (const auto& rc : person)
+					{
+						op::log(rc.toString());
+
+						cv::Rect rect(rc.x, rc.y, rc.width, rc.height);
+						cv::Rect rectImg(0, 0, img.cols, img.rows);
+						rect &= rectImg;
+						if (rect.x >= 0 && rect.y >= 0 && rect.width > 0 && rect.height > 0) {
+							cv::Mat handImg(img, rect);
+							++handCount;
+							std::string filename = FLAGS_write_images + "\\" + datumsPtr->at(0).name + "_hand_" + std::to_string(handCount) + ".png";
+
+							cv::imwrite(filename, handImg);
+							cv::imshow("hand", handImg);
+							cv::waitKey(1);
+						}
+					}
+				}
+
             }
         }
         catch (const std::exception& e)

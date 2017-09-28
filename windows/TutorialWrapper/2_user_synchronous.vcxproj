@@ -50,6 +50,7 @@
     <ReferencePath>$(VC_ReferencesPath_x64);</ReferencePath>
     <IntDir>$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
@@ -85,6 +86,9 @@
       <AdditionalLibraryDirectories>$(CUDA_PATH_V8_0)\lib\x64\;</AdditionalLibraryDirectories>
       <AdditionalDependencies>..\..\3rdparty\windows\caffe\lib\caffe.lib;..\..\3rdparty\windows\caffe\lib\caffeproto.lib;..\..\3rdparty\windows\caffe3rdparty\lib\boost_filesystem-vc140-mt-1_61.lib;..\..\3rdparty\windows\caffe3rdparty\lib\boost_system-vc140-mt-1_61.lib;..\..\3rdparty\windows\caffe3rdparty\lib\caffehdf5.lib;..\..\3rdparty\windows\caffe3rdparty\lib\caffehdf5_hl.lib;..\..\3rdparty\windows\caffe3rdparty\lib\caffezlib.lib;..\..\3rdparty\windows\caffe3rdparty\lib\gflags.lib;..\..\3rdparty\windows\caffe3rdparty\lib\glog.lib;..\..\3rdparty\windows\caffe3rdparty\lib\leveldb.lib;..\..\3rdparty\windows\caffe3rdparty\lib\libopenblas.dll.a;..\..\3rdparty\windows\caffe3rdparty\lib\libprotobuf.lib;..\..\3rdparty\windows\caffe3rdparty\lib\lmdb.lib;..\..\3rdparty\windows\caffe3rdparty\lib\snappy.lib;..\..\3rdparty\windows\opencv\x64\vc14\lib\opencv_world310.lib;cublas.lib;cublas_device.lib;cudart.lib;cudnn.lib;curand.lib;ntdll.lib;shlwapi.lib;..\x64\Release\OpenPose.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(OutDir)$(TargetFileName)   F:\genee_work\openpose\oak-output\</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
