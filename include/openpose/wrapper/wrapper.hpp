@@ -641,6 +641,7 @@ namespace op
                 }
             }
 
+
             // Hand extractor(s)
             if (wrapperStructHand.enable)
             {
@@ -665,7 +666,16 @@ namespace op
                     if (wrapperStructHand.tracking)
                         spWPoses.at(gpuId).emplace_back(std::make_shared<WHandDetectorUpdate<TDatumsPtr>>(handDetector));
                 }
-            }
+			}
+			else {
+				//add by oak
+
+				const auto handDetector = std::make_shared<HandDetector>(wrapperStructPose.poseModel);
+				for (auto gpuId = 0u; gpuId < spWPoses.size(); gpuId++)
+				{
+					spWPoses.at(gpuId).emplace_back(std::make_shared<WHandDetector<TDatumsPtr>>(handDetector));
+				}
+			}
 
             // Pose renderer(s)
             if (!poseRenderers.empty())

@@ -280,7 +280,7 @@ public:
             if (datumsPtr != nullptr && !datumsPtr->empty())
             {
                 // Show in command line the resulting pose keypoints for body, face and hands
-                op::log("\nKeypoints:");
+                //op::log("\nKeypoints:");
                 // Accesing each element of the keypoints
                 const auto& poseKeypoints = datumsPtr->at(0).poseKeypoints;
 				/*
@@ -310,25 +310,28 @@ public:
 				cv::imshow("User worker GUI", datumsPtr->at(0).cvOutputData);
                 cv::waitKey(1); // It displays the image and sleeps at least 1 ms (it usually sleeps ~5-10 msec to display the image)
 				const auto& handRects = datumsPtr->at(0).handRectangles;
-				int handCount = 0;
+				int personCount = 0;
 				for (const auto& person : handRects) {
+					int handCount = 0;
 					for (const auto& rc : person)
 					{
 						op::log(rc.toString());
-
-						cv::Rect rect(rc.x, rc.y, rc.width, rc.height);
+						//从实际来看，缩减1/3还是比较准
+						cv::Rect rect(rc.x+rc.width/6, rc.y+rc.height/6, rc.width*2/3, rc.height*2/3);
+						
 						cv::Rect rectImg(0, 0, img.cols, img.rows);
-						rect &= rectImg;
+						rect &= rectImg;//排除图像外区域
 						if (rect.x >= 0 && rect.y >= 0 && rect.width > 0 && rect.height > 0) {
 							cv::Mat handImg(img, rect);
-							++handCount;
-							std::string filename = FLAGS_write_images + "\\" + datumsPtr->at(0).name + "_hand_" + std::to_string(handCount) + ".png";
+							std::string filename = FLAGS_write_images + "\\" + datumsPtr->at(0).name 
+								+ "_hand_" +std::to_string(personCount) +"-"+ std::to_string(handCount++) + ".png";
 
 							cv::imwrite(filename, handImg);
 							cv::imshow("hand", handImg);
 							cv::waitKey(1);
 						}
 					}
+					personCount++;
 				}
 
             }
