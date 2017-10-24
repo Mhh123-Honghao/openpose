@@ -13,6 +13,8 @@
     // 2. `utilities` module: for the error & logging functions, i.e. op::error & op::log respectively
 // This file should only be used for the user to take specific examples.
 
+
+
 // C++ std library dependencies
 #include <chrono> // `std::chrono::` functions and classes, e.g. std::chrono::milliseconds
 #include <string>
@@ -175,6 +177,55 @@ DEFINE_bool(no_gui_verbose, true, "Do not write text on output images on GUI (e.
 DEFINE_bool(no_display, false, "Do not open a display window. Useful if there is no X server and/or to slightly speed up"
 	" the processing if visual output is not required.");
 
+//windows
+#define _WINSOCK_DEPRECATED_NO_WARNINGS 1
+#include <WINSOCK2.H>
+#pragma comment(lib,"ws2_32.lib")
+// windows
+int startConnect()
+{
+	int err;
+	WORD versionRequired;
+	WSADATA wsaData;
+	versionRequired = MAKEWORD(1, 1);
+	err = WSAStartup(versionRequired, &wsaData);//协议库的版本信息
+	if (!err)
+	{
+		printf("客户端嵌套字已经打开!\n");
+	}
+	else
+	{
+		printf("客户端的嵌套字打开失败!\n");
+		return 0;//结束
+	}
+	SOCKET client = socket(AF_INET, SOCK_STREAM, 0);
+	SOCKADDR_IN clientsock_in;
+	clientsock_in.sin_addr.S_un.S_addr = inet_addr("127.0.0.1");
+	clientsock_in.sin_family = AF_INET;
+	clientsock_in.sin_port = htons(8001);
+
+	connect(client, (SOCKADDR*)&clientsock_in, sizeof(SOCKADDR));//开始连接
+	char receiveBuf[100];
+	recv(client, receiveBuf, 101, 0);
+	printf("%s\n", receiveBuf);
+	send(client, "ttt", strlen("ttt") + 1, 0);
+	return client;
+}
+
+SOCKET clientSocket = startConnect();
+
+
+int stopConnect() {
+	closesocket(clientSocket);
+	WSACleanup();
+	return 1;
+}
+
+int sendNotify() {
+	send(clientSocket, "nnn", strlen("nnn") + 1, 0);
+	return 1;
+}
+
 
 // If the user needs his own variables, he can inherit the op::Datum struct and add them
 // UserDatum can be directly used by the OpenPose wrapper because it inherits from op::Datum, just define Wrapper<UserDatum> instead of
@@ -291,6 +342,7 @@ public:
 					bare_hand = handConfirm(right_points, datum, 1) || bare_hand;
 
 					if (bare_hand) {
+						/*
 						cv::String txt = "Bare hand!";
 						int font_face = cv::FONT_HERSHEY_COMPLEX;
 						double font_scale = 1;
@@ -299,6 +351,10 @@ public:
 						cv::Scalar color(0, 255, 255);
 						cv::Size size = cv::getTextSize(txt, font_face, font_scale, thickness, &baseline);
 						cv::putText(img, txt, cv::Point(5, 5 + size.height), font_face, font_scale, color, thickness);
+						*/
+						std::string filename = "F:\\genee_work\\detect-bare-hand\\image\\current.png";
+						cv::imwrite(filename, datum.cvInputData);
+						sendNotify();
 					}
 				}
 			}
@@ -343,6 +399,7 @@ public:
 				if (isBareHand(img, handKeypoints, person, datum.scaleInputToOutput)) {
 					auto rc = handRects.at(person).at(leftright);
 					drawHandRect(img, rc, datum.scaleInputToOutput);
+					drawHandRect(datum.cvInputData, rc, 1.0);
 					bare_hand = true;
 				}
 			}
@@ -455,6 +512,8 @@ public:
         }
     }
 };
+
+
 
 int openPoseTutorialWrapper2()
 {
@@ -578,6 +637,8 @@ int openPoseTutorialWrapper2()
     const auto totalTimeSec = (double)std::chrono::duration_cast<std::chrono::nanoseconds>(now-timerBegin).count() * 1e-9;
     const auto message = "Real-time pose estimation demo successfully finished. Total time: " + std::to_string(totalTimeSec) + " seconds.";
     op::log(message, op::Priority::High);
+
+	stopConnect();
 
     return 0;
 }
